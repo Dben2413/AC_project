@@ -22,7 +22,7 @@ def main(filename,Energy_MCS,OrderParameter_MCS):
         ax.set_xlabel("MCS")
         ax.set_ylabel("Order Parameter, S")
         if Energy_MCS==2:
-            plt.savefig(f"OrderParameter_MCS{filename}.png")
+            plt.savefig(f"OrderParameter_MCS_{filename}.png")
         plt.show()
 
 

@@ -112,7 +112,7 @@ def savedat(arr,nsteps,Ts,runtime,ratio,energy,order,nmax):
     # Create filename based on current date and time.
     current_datetime = datetime.datetime.now().strftime("%a-%d-%b-%Y-at-%I-%M-%S%p")
     # filename = "LL-Output-{:s}.txt".format(current_datetime)
-    config = f"MSC={sys.argv[1]}_size={sys.argv[2]}_temp={sys.argv[3]}"
+    config = f"MSC={sys.argv[1]}_size={sys.argv[2]}_temp={Ts}"
     filename = "LL-Output-{:s}.txt".format(config)
     FileOut = open(filename,"w")
     # Write a header with run parameters
@@ -301,13 +301,19 @@ def main(program, nsteps, nmax, temp, pflag):
 # main simulation function.
 #
 if __name__ == '__main__':
-    if int(len(sys.argv)) == 5:
+    if int(len(sys.argv)) == 7:
         PROGNAME = sys.argv[0]
         ITERATIONS = int(sys.argv[1])
         SIZE = int(sys.argv[2])
         TEMPERATURE = float(sys.argv[3])
         PLOTFLAG = int(sys.argv[4])
-        main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG)
+        test = int(sys.argv[5])
+        test_max = float(sys.argv[6])
+        if test == 1:
+            for i in range (1,int(test_max*20)):
+                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG)
+        else:
+          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG)
     else:
-        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG>".format(sys.argv[0]))
+        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max>".format(sys.argv[0]))
 #=======================================================================
