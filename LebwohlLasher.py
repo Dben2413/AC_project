@@ -295,10 +295,10 @@ def main(program, nsteps, nmax, temp, pflag):
     ratio = np.zeros((numtasks-1, nsteps+1))
     order = np.zeros((numtasks-1, nsteps+1))
 
-    for i in range(numtasks-1):
-        energy[i][0] = all_energy(lattice_0,nmax,0,nmax-1)
-        ratio[i][0] = 0.5 # ideal value
-        order[i][0] = get_order(lattice_0,nmax,0,nmax-1)
+    # for i in range(numtasks-1):
+    energy[0][0] = all_energy(lattice_0,nmax,0,nmax-1)
+    ratio[0][0] = 0.5 # ideal value
+    order[0][0] = get_order(lattice_0,nmax,0,nmax-1)
 
     numworkers = numtasks-1
     if taskid == MASTER:
@@ -343,10 +343,10 @@ def main(program, nsteps, nmax, temp, pflag):
 
       final_time = MPI.Wtime()
       runtime = final_time-initial_time
-      energy=np.mean(energy,axis=0)
-      order=np.mean(order,axis=0)
-      ratio=np.mean(ratio,axis=0)
-      print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,final_time,order[nsteps-1],runtime))
+      energy=np.sum(energy,axis=0)
+      order=np.sum(order,axis=0)
+      ratio=np.sum(ratio,axis=0)
+      print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,temp,order[nsteps-1],runtime))
     # Plot final frame of lattice and generate output file
       savedat(lattice_0,nsteps,temp,runtime,ratio,energy,order,nmax)
       plotdat(lattice_0,pflag,nmax)
