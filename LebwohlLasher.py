@@ -111,7 +111,9 @@ def savedat(arr,nsteps,Ts,runtime,ratio,energy,order,nmax):
     """
     # Create filename based on current date and time.
     current_datetime = datetime.datetime.now().strftime("%a-%d-%b-%Y-at-%I-%M-%S%p")
-    filename = "LL-Output-{:s}.txt".format(current_datetime)
+    # filename = "LL-Output-{:s}.txt".format(current_datetime)
+    config = f"MSC={sys.argv[1]}_size={sys.argv[2]}_temp={sys.argv[3]}"
+    filename = "LL-Output-{:s}.txt".format(config)
     FileOut = open(filename,"w")
     # Write a header with run parameters
     print("#=====================================================",file=FileOut)
