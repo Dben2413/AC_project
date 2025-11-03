@@ -32,6 +32,7 @@ def main(iteration,size,temp_boundary,plotflag):
     if plotflag==1:
         plt.savefig(f"OrderParameter_Temp_{filename}.png")
     plt.show()
+    return 1
     
 
 

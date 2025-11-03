@@ -21,7 +21,7 @@ domains alternate between old data and new data.
 
 SH 16-Oct-23
 """
-
+import pytest
 import sys
 import time
 import datetime
@@ -112,7 +112,7 @@ def savedat(arr,nsteps,Ts,runtime,ratio,energy,order,nmax):
     # Create filename based on current date and time.
     current_datetime = datetime.datetime.now().strftime("%a-%d-%b-%Y-at-%I-%M-%S%p")
     # filename = "LL-Output-{:s}.txt".format(current_datetime)
-    config = f"MSC={sys.argv[1]}_size={sys.argv[2]}_temp={Ts}"
+    config = f"MSC={nsteps}_size={nmax}_temp={Ts}"
     filename = "LL-Output-{:s}.txt".format(config)
     FileOut = open(filename,"w")
     # Write a header with run parameters
@@ -296,6 +296,7 @@ def main(program, nsteps, nmax, temp, pflag):
     # Plot final frame of lattice and generate output file
     savedat(lattice,nsteps,temp,runtime,ratio,energy,order,nmax)
     plotdat(lattice,pflag,nmax)
+    return 1
 #=======================================================================
 # Main part of program, getting command line arguments and calling
 # main simulation function.
