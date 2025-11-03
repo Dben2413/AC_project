@@ -28,6 +28,7 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from mpi4py import MPI
 
 #=======================================================================
 def initdat(nmax):
@@ -164,7 +165,7 @@ def one_energy(arr,ix,iy,nmax):
     en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
     return en
 #=======================================================================
-def all_energy(arr,nmax):
+def all_energy(arr,nmax,start,end):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -176,12 +177,12 @@ def all_energy(arr,nmax):
 	  enall (float) = reduced energy of lattice.
     """
     enall = 0.0
-    for i in range(nmax):
+    for i in range(start,end+1):
         for j in range(nmax):
             enall += one_energy(arr,i,j,nmax)
     return enall
 #=======================================================================
-def get_order(arr,nmax):
+def get_order(arr,nmax,start,end):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -202,14 +203,14 @@ def get_order(arr,nmax):
     lab = np.vstack((np.cos(arr),np.sin(arr),np.zeros_like(arr))).reshape(3,nmax,nmax)
     for a in range(3):
         for b in range(3):
-            for i in range(nmax):
+            for i in range(start,end+1):
                 for j in range(nmax):
                     Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
     Qab = Qab/(2*nmax*nmax)
     eigenvalues,eigenvectors = np.linalg.eig(Qab)
     return eigenvalues.max()
 #=======================================================================
-def MC_step(arr,Ts,nmax):
+def MC_step(arr,Ts,nmax,start,end):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -235,7 +236,7 @@ def MC_step(arr,Ts,nmax):
     xran = np.random.randint(0,high=nmax, size=(nmax,nmax))
     yran = np.random.randint(0,high=nmax, size=(nmax,nmax))
     aran = np.random.normal(scale=scale, size=(nmax,nmax))
-    for i in range(nmax):
+    for i in range(start,end+1):
         for j in range(nmax):
             ix = xran[i,j]
             iy = yran[i,j]
@@ -255,6 +256,18 @@ def MC_step(arr,Ts,nmax):
                 else:
                     arr[ix,iy] -= ang
     return accept/(nmax*nmax)
+
+
+
+#=======================================================================
+MAXWORKER  = 17          # maximum number of worker tasks
+MINWORKER  = 1          # minimum number of worker tasks
+BEGIN      = 1          # message tag
+LTAG       = 2          # message tag
+RTAG       = 3          # message tag
+NONE       = 0          # indicates no neighbour
+DONE       = 4          # message tag
+MASTER     = 0          # taskid of first process
 #=======================================================================
 def main(program, nsteps, nmax, temp, pflag):
     """
@@ -269,33 +282,123 @@ def main(program, nsteps, nmax, temp, pflag):
     Returns:
       NULL
     """
-    # Create and initialise lattice
-    lattice = initdat(nmax)
-    # Plot initial frame of lattice
-    plotdat(lattice,pflag,nmax)
-    # Create arrays to store energy, acceptance ratio and order parameter
-    energy = np.zeros(nsteps+1)#,dtype=np.dtype)
-    ratio = np.zeros(nsteps+1)#,dtype=np.dtype)
-    order = np.zeros(nsteps+1)#,dtype=np.dtype)
-    # Set initial values in arrays
-    energy[0] = all_energy(lattice,nmax)
-    ratio[0] = 0.5 # ideal value
-    order[0] = get_order(lattice,nmax)
+    lattice_0=np.random.random_sample((nmax,nmax))*2.0*np.pi
+    lattice_1=np.random.random_sample((nmax,nmax))*2.0*np.pi
 
-    # Begin doing and timing some MC steps.
-    initial = time.time()
-    for it in range(1,nsteps+1):
-        ratio[it] = MC_step(lattice,temp,nmax)
-        energy[it] = all_energy(lattice,nmax)
-        order[it] = get_order(lattice,nmax)
-    final = time.time()
-    runtime = final-initial
+
+    comm = MPI.COMM_WORLD
+    taskid = comm.Get_rank()
+    numtasks = comm.Get_size()
+
+
+    energy = np.zeros((numtasks-1, nsteps+1))
+    ratio = np.zeros((numtasks-1, nsteps+1))
+    order = np.zeros((numtasks-1, nsteps+1))
+
+    for i in range(numtasks-1):
+        energy[i][0] = all_energy(lattice_0,nmax,0,nmax-1)
+        ratio[i][0] = 0.5 # ideal value
+        order[i][0] = get_order(lattice_0,nmax,0,nmax-1)
+
+    numworkers = numtasks-1
+    if taskid == MASTER:
+      averow = nmax//numworkers
+      extra = nmax%numworkers
+      offset = 0
+    # Create and initialise lattice
+      lattice_0 = initdat(nmax)
+      lattice_1 = lattice_0.copy()
+
+      initial_time = MPI.Wtime()
+      for i in range(1,numworkers+1):
+        rows = averow
+        if i <= extra:
+            rows+=1
+      # Tell each worker who its neighbors are, since they must exchange
+      # data with each other.
+        if i == 1:
+            above = NONE
+        else:
+            above = i - 1
+        if i == numworkers:
+            below = NONE
+        else:
+            below = i + 1
+        comm.send(offset, dest=i, tag=BEGIN)
+        comm.send(rows, dest=i, tag=BEGIN)
+        comm.send(above, dest=i, tag=BEGIN)
+        comm.send(below, dest=i, tag=BEGIN)
+        comm.send(energy[i-1], dest=i, tag=BEGIN)
+        comm.send(ratio[i-1], dest=i, tag=BEGIN)
+        comm.send(order[i-1], dest=i, tag=BEGIN)
+        comm.Send(lattice_0[offset:offset+rows,:], dest=i, tag=BEGIN)
+        offset += rows
+      for i in range(1,numworkers+1):
+          offset = comm.recv(source=i, tag=DONE)
+          rows = comm.recv(source=i, tag=DONE)
+          energy[i-1] = comm.recv(source=i, tag=DONE)
+          ratio[i-1] = comm.recv(source=i, tag=DONE)
+          order[i-1] = comm.recv(source=i, tag=DONE)
+          comm.Recv([lattice_0[offset,:],rows*nmax,MPI.DOUBLE], source=i, tag=DONE)
+
+      final_time = MPI.Wtime()
+      runtime = final_time-initial_time
+      energy=np.mean(energy,axis=0)
+      order=np.mean(order,axis=0)
+      ratio=np.mean(ratio,axis=0)
+      print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,final_time,order[nsteps-1],runtime))
+    # Plot final frame of lattice and generate output file
+      savedat(lattice_0,nsteps,temp,runtime,ratio,energy,order,nmax)
+      plotdat(lattice_0,pflag,nmax)
+
+
+
+
+
+    elif taskid != MASTER:
+      offset = comm.recv(source=MASTER, tag=BEGIN)
+      rows = comm.recv(source=MASTER, tag=BEGIN)
+      above = comm.recv(source=MASTER, tag=BEGIN)
+      below = comm.recv(source=MASTER, tag=BEGIN)
+      energy[taskid-1] = comm.recv(source=MASTER, tag=BEGIN)
+      ratio[taskid-1] = comm.recv(source=MASTER, tag=BEGIN)
+      order[taskid-1] = comm.recv(source=MASTER, tag=BEGIN)
+      comm.Recv([lattice_0[offset,:],rows*nmax,MPI.DOUBLE], source=MASTER, tag=BEGIN)
+
+      start=offset
+      end=offset+rows-1
+      if offset==0:
+          start=1
+      if (offset+rows)==nmax:
+          end-=1
+
+
+
+      # Begin doing and timing some MC steps.
+      for it in range(1,nsteps+1):
+        if above != NONE:
+            req=comm.Isend([lattice_0[offset,:],nmax,MPI.DOUBLE], dest=above, tag=RTAG)
+            comm.Recv([lattice_0[offset-1,:],nmax,MPI.DOUBLE], source=above, tag=LTAG)
+        if below != NONE:
+            req=comm.Isend([lattice_0[offset+rows-1,:],nmax,MPI.DOUBLE], dest=below, tag=LTAG)
+            comm.Recv([lattice_0[offset+rows,:],nmax,MPI.DOUBLE], source=below, tag=RTAG)
+
+        ratio[taskid-1][it] = MC_step(lattice_0,temp,nmax,start,end)
+        energy[taskid-1][it] = all_energy(lattice_0,nmax,start,end)
+        order[taskid-1][it] = get_order(lattice_0,nmax,start,end)
+        lattice_0,lattice_1 = lattice_1,lattice_0
+      comm.send(offset, dest=MASTER, tag=DONE)
+      comm.send(rows, dest=MASTER, tag=DONE)
+      comm.send(energy[taskid-1], dest=MASTER, tag=DONE)
+      comm.send(ratio[taskid-1], dest=MASTER, tag=DONE)
+      comm.send(order[taskid-1], dest=MASTER, tag=DONE)
+      comm.Send([lattice_0[offset,:],rows*nmax,MPI.DOUBLE], dest=MASTER, tag=DONE)
+
+
+
     
     # Final outputs
-    print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,temp,order[nsteps-1],runtime))
-    # Plot final frame of lattice and generate output file
-    savedat(lattice,nsteps,temp,runtime,ratio,energy,order,nmax)
-    plotdat(lattice,pflag,nmax)
+
     return 1
 #=======================================================================
 # Main part of program, getting command line arguments and calling
