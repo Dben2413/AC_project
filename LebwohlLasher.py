@@ -182,7 +182,7 @@ def all_energy(arr,nmax,start,end):
             enall += one_energy(arr,i,j,nmax)
     return enall
 #=======================================================================
-def get_order(arr,nmax,start,end):
+def get_order(arr_0,nmax,start,end):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -202,7 +202,7 @@ def get_order(arr,nmax,start,end):
     # Generate a 3D unit vector for each cell (i,j) and
     # put it in a (3,i,j) array.
     #
-    lab = np.vstack((np.cos(arr),np.sin(arr),np.zeros_like(arr))).reshape(3,nmax,nmax)
+    lab = np.vstack((np.cos(arr_0),np.sin(arr_0),np.zeros_like(arr_0))).reshape(3,nmax,nmax)
     for a in range(3):
         for b in range(3):
             for i in range(start,end+1):
@@ -213,7 +213,7 @@ def get_order(arr,nmax,start,end):
     # eigenvalues,eigenvectors = np.linalg.eig(Qab)
     # return eigenvalues.max()
 #=======================================================================
-def MC_step(arr,Ts,nmax,start,end):
+def MC_step(arr_0,Ts,nmax,start,end):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -244,9 +244,9 @@ def MC_step(arr,Ts,nmax,start,end):
             ix = xran[i,j]
             iy = yran[i,j]
             ang = aran[i,j]
-            en0 = one_energy(arr,ix,iy,nmax)
-            arr[ix,iy] += ang
-            en1 = one_energy(arr,ix,iy,nmax)
+            en0 = one_energy(arr_0,ix,iy,nmax)
+            arr_0[ix,iy] += ang
+            en1 = one_energy(arr_0,ix,iy,nmax)
             if en1<=en0:
                 accept += 1
             else:
@@ -257,7 +257,7 @@ def MC_step(arr,Ts,nmax,start,end):
                 if boltz >= np.random.uniform(0.0,1.0):
                     accept += 1
                 else:
-                    arr[ix,iy] -= ang
+                    arr_0[ix,iy] -= ang
     return accept/(nmax*nmax)
 
 
@@ -285,14 +285,13 @@ def main(program, nsteps, nmax, temp, pflag):
     Returns:
       NULL
     """
-    lattice_0 = initdat(nmax)
-    lattice_1 = lattice_0.copy()
 
-    order_final = np.zeros(nsteps+1)
     comm = MPI.COMM_WORLD
     taskid = comm.Get_rank()
     numtasks = comm.Get_size()
 
+    lattice_0 = initdat(nmax)
+    order_final = np.zeros(nsteps+1)
 
     energy = np.zeros((numtasks-1, nsteps+1))
     ratio = np.zeros((numtasks-1, nsteps+1))
@@ -310,7 +309,6 @@ def main(program, nsteps, nmax, temp, pflag):
       offset = 0
     # Create and initialise lattice
       lattice_0 = initdat(nmax)
-      lattice_1 = lattice_0.copy()
 
       initial_time = MPI.Wtime()
       for i in range(1,numworkers+1):
@@ -345,15 +343,16 @@ def main(program, nsteps, nmax, temp, pflag):
           comm.Recv([lattice_0[offset,:],rows*nmax,MPI.DOUBLE], source=i, tag=DONE)
 
       
-      for i in range(len(order)):
-        print(order[i][1])
+      # for i in range(len(order)):
+      #   print(order[i][1])
       # print(order.shape)
-      print("#=======================================================================")
+      # print("#=======================================================================")
       order=np.add.reduce(order,axis=0)
-      print(order.shape)
-      print(order[0])
-      for i in range(nsteps):
+      # print(order.shape)
+      # print(order[0])
+      for i in range(0,nsteps+1):
         eigenvalues,eigenvectors = np.linalg.eig(order[i])
+
         order_final[i]=eigenvalues.max()
       final_time = MPI.Wtime()
       runtime = final_time-initial_time
@@ -391,7 +390,7 @@ def main(program, nsteps, nmax, temp, pflag):
 
 
       # Begin doing and timing some MC steps.
-      for it in range(1,nsteps):
+      for it in range(1,nsteps+1):
         if above != NONE:
             req=comm.Isend([lattice_0[offset,:],nmax,MPI.DOUBLE], dest=above, tag=RTAG)
             comm.Recv([lattice_0[offset-1,:],nmax,MPI.DOUBLE], source=above, tag=LTAG)
@@ -400,9 +399,9 @@ def main(program, nsteps, nmax, temp, pflag):
             comm.Recv([lattice_0[offset+rows,:],nmax,MPI.DOUBLE], source=below, tag=RTAG)
 
         ratio[taskid-1][it] = MC_step(lattice_0,temp,nmax,start,end)
+
         energy[taskid-1][it] = all_energy(lattice_0,nmax,start,end)
         order[taskid-1][it] = get_order(lattice_0,nmax,start,end)
-        lattice_0,lattice_1 = lattice_1,lattice_0
       comm.send(offset, dest=MASTER, tag=DONE)
       comm.send(rows, dest=MASTER, tag=DONE)
       comm.send(energy[taskid-1], dest=MASTER, tag=DONE)
