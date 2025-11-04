@@ -28,9 +28,7 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from numba import jit
 import numba as nb
-@jit(nopython=True)
 #=======================================================================
 def initdat(nmax):
     """
