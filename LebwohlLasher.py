@@ -285,8 +285,8 @@ def main(program, nsteps, nmax, temp, pflag):
     Returns:
       NULL
     """
-    lattice_0=np.random.random_sample((nmax,nmax))*2.0*np.pi
-    lattice_1=np.random.random_sample((nmax,nmax))*2.0*np.pi
+    lattice_0 = initdat(nmax)
+    lattice_1 = lattice_0.copy()
 
     order_final = np.zeros(nsteps+1)
     comm = MPI.COMM_WORLD
@@ -345,17 +345,16 @@ def main(program, nsteps, nmax, temp, pflag):
           comm.Recv([lattice_0[offset,:],rows*nmax,MPI.DOUBLE], source=i, tag=DONE)
 
       
-      # for i in range(len(order)):
-      #   print(order[i][1])
+      for i in range(len(order)):
+        print(order[i][1])
       # print(order.shape)
-      # print("#=======================================================================")
+      print("#=======================================================================")
       order=np.add.reduce(order,axis=0)
-      # print(order.shape)
-      # print(order[1].shape)
+      print(order.shape)
+      print(order[0])
       for i in range(nsteps):
         eigenvalues,eigenvectors = np.linalg.eig(order[i])
         order_final[i]=eigenvalues.max()
-      print(order[-2])
       final_time = MPI.Wtime()
       runtime = final_time-initial_time
 
@@ -392,7 +391,7 @@ def main(program, nsteps, nmax, temp, pflag):
 
 
       # Begin doing and timing some MC steps.
-      for it in range(1,nsteps+1):
+      for it in range(1,nsteps):
         if above != NONE:
             req=comm.Isend([lattice_0[offset,:],nmax,MPI.DOUBLE], dest=above, tag=RTAG)
             comm.Recv([lattice_0[offset-1,:],nmax,MPI.DOUBLE], source=above, tag=LTAG)
