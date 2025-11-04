@@ -28,7 +28,7 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-
+from Function import all_energy,one_energy
 #=======================================================================
 def initdat(nmax):
     """
@@ -130,56 +130,56 @@ def savedat(arr,nsteps,Ts,runtime,ratio,energy,order,nmax):
         print("   {:05d}    {:6.4f} {:12.4f}  {:6.4f} ".format(i,ratio[i],energy[i],order[i]),file=FileOut)
     FileOut.close()
 #=======================================================================
-def one_energy(arr,ix,iy,nmax):
-    """
-    Arguments:
-	  arr (float(nmax,nmax)) = array that contains lattice data;
-	  ix (int) = x lattice coordinate of cell;
-	  iy (int) = y lattice coordinate of cell;
-      nmax (int) = side length of square lattice.
-    Description:
-      Function that computes the energy of a single cell of the
-      lattice taking into account periodic boundaries.  Working with
-      reduced energy (U/epsilon), equivalent to setting epsilon=1 in
-      equation (1) in the project notes.
-	Returns:
-	  en (float) = reduced energy of cell.
-    """
-    en = 0.0
-    ixp = (ix+1)%nmax # These are the coordinates
-    ixm = (ix-1)%nmax # of the neighbours
-    iyp = (iy+1)%nmax # with wraparound
-    iym = (iy-1)%nmax #
-#
-# Add together the 4 neighbour contributions
-# to the energy
-#
-    ang = arr[ix,iy]-arr[ixp,iy]
-    en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
-    ang = arr[ix,iy]-arr[ixm,iy]
-    en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
-    ang = arr[ix,iy]-arr[ix,iyp]
-    en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
-    ang = arr[ix,iy]-arr[ix,iym]
-    en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
-    return en
+# def one_energy(arr,ix,iy,nmax):
+#     """
+#     Arguments:
+# 	  arr (float(nmax,nmax)) = array that contains lattice data;
+# 	  ix (int) = x lattice coordinate of cell;
+# 	  iy (int) = y lattice coordinate of cell;
+#       nmax (int) = side length of square lattice.
+#     Description:
+#       Function that computes the energy of a single cell of the
+#       lattice taking into account periodic boundaries.  Working with
+#       reduced energy (U/epsilon), equivalent to setting epsilon=1 in
+#       equation (1) in the project notes.
+# 	Returns:
+# 	  en (float) = reduced energy of cell.
+#     """
+#     en = 0.0
+#     ixp = (ix+1)%nmax # These are the coordinates
+#     ixm = (ix-1)%nmax # of the neighbours
+#     iyp = (iy+1)%nmax # with wraparound
+#     iym = (iy-1)%nmax #
+# #
+# # Add together the 4 neighbour contributions
+# # to the energy
+# #
+#     ang = arr[ix,iy]-arr[ixp,iy]
+#     en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
+#     ang = arr[ix,iy]-arr[ixm,iy]
+#     en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
+#     ang = arr[ix,iy]-arr[ix,iyp]
+#     en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
+#     ang = arr[ix,iy]-arr[ix,iym]
+#     en += 0.5*(1.0 - 3.0*np.cos(ang)**2)
+#     return en
 #=======================================================================
-def all_energy(arr,nmax):
-    """
-    Arguments:
-	  arr (float(nmax,nmax)) = array that contains lattice data;
-      nmax (int) = side length of square lattice.
-    Description:
-      Function to compute the energy of the entire lattice. Output
-      is in reduced units (U/epsilon).
-	Returns:
-	  enall (float) = reduced energy of lattice.
-    """
-    enall = 0.0
-    for i in range(nmax):
-        for j in range(nmax):
-            enall += one_energy(arr,i,j,nmax)
-    return enall
+# def all_energy(arr,nmax):
+#     """
+#     Arguments:
+# 	  arr (float(nmax,nmax)) = array that contains lattice data;
+#       nmax (int) = side length of square lattice.
+#     Description:
+#       Function to compute the energy of the entire lattice. Output
+#       is in reduced units (U/epsilon).
+# 	Returns:
+# 	  enall (float) = reduced energy of lattice.
+#     """
+#     enall = 0.0
+#     for i in range(nmax):
+#         for j in range(nmax):
+#             enall += one_energy(arr,i,j,nmax)
+#     return enall
 #=======================================================================
 def get_order(arr,nmax):
     """
@@ -256,7 +256,7 @@ def MC_step(arr,Ts,nmax):
                     arr[ix,iy] -= ang
     return accept/(nmax*nmax)
 #=======================================================================
-def main(program, nsteps, nmax, temp, pflag):
+def main(program, nsteps, nmax, temp, pflag, threads):
     """
     Arguments:
 	  program (string) = the name of the program;
@@ -278,7 +278,7 @@ def main(program, nsteps, nmax, temp, pflag):
     ratio = np.zeros(nsteps+1)#,dtype=np.dtype)
     order = np.zeros(nsteps+1)#,dtype=np.dtype)
     # Set initial values in arrays
-    energy[0] = all_energy(lattice,nmax)
+    energy[0] = all_energy(lattice,nmax,threads)
     ratio[0] = 0.5 # ideal value
     order[0] = get_order(lattice,nmax)
 
@@ -286,13 +286,13 @@ def main(program, nsteps, nmax, temp, pflag):
     initial = time.time()
     for it in range(1,nsteps+1):
         ratio[it] = MC_step(lattice,temp,nmax)
-        energy[it] = all_energy(lattice,nmax)
+        energy[it] = all_energy(lattice,nmax,threads)
         order[it] = get_order(lattice,nmax)
     final = time.time()
     runtime = final-initial
     
     # Final outputs
-    print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,temp,order[nsteps-1],runtime))
+    print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f},threads: {} Time: {:8.6f} s".format(program, nmax,nsteps,temp,order[nsteps-1],threads,runtime))
     # Plot final frame of lattice and generate output file
     savedat(lattice,nsteps,temp,runtime,ratio,energy,order,nmax)
     plotdat(lattice,pflag,nmax)
@@ -302,7 +302,7 @@ def main(program, nsteps, nmax, temp, pflag):
 # main simulation function.
 #
 if __name__ == '__main__':
-    if int(len(sys.argv)) == 7:
+    if int(len(sys.argv)) == 8:
         PROGNAME = sys.argv[0]
         ITERATIONS = int(sys.argv[1])
         SIZE = int(sys.argv[2])
@@ -310,11 +310,13 @@ if __name__ == '__main__':
         PLOTFLAG = int(sys.argv[4])
         test = int(sys.argv[5])
         test_max = float(sys.argv[6])
+        threads = int(sys.argv[7])
+  
         if test == 1:
             for i in range (1,int(test_max*20)):
-                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG)
+                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG,threads)
         else:
-          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG)
+          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG,threads)
     else:
-        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max>".format(sys.argv[0]))
+        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max> <number of threads>".format(sys.argv[0]))
 #=======================================================================
