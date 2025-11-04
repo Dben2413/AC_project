@@ -28,7 +28,9 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-
+from numba import jit
+import numba as nb
+@jit(nopython=True)
 #=======================================================================
 def initdat(nmax):
     """
@@ -130,6 +132,7 @@ def savedat(arr,nsteps,Ts,runtime,ratio,energy,order,nmax):
         print("   {:05d}    {:6.4f} {:12.4f}  {:6.4f} ".format(i,ratio[i],energy[i],order[i]),file=FileOut)
     FileOut.close()
 #=======================================================================
+@nb.njit
 def one_energy(arr,ix,iy,nmax):
     """
     Arguments:
@@ -181,7 +184,8 @@ def all_energy(arr,nmax):
             enall += one_energy(arr,i,j,nmax)
     return enall
 #=======================================================================
-def get_order(arr,nmax):
+@nb.guvectorize(['(float64[:,:],int32,int32,float64[:])'], '(m,n),(),()->()', nopython=True, target='parallel')
+def get_order(arr,nmax,index,out):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -207,9 +211,12 @@ def get_order(arr,nmax):
                     Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
     Qab = Qab/(2*nmax*nmax)
     eigenvalues,eigenvectors = np.linalg.eig(Qab)
-    return eigenvalues.max()
+    out[index] = eigenvalues.max()
+    # return eigenvalues.max()
+
 #=======================================================================
-def MC_step(arr,Ts,nmax):
+@nb.guvectorize(['(float64[:,:],float64,int32,int32,float64[:])'], '(m,n),(),(),()->()', nopython=True, target='parallel')
+def MC_step(arr,Ts,nmax,index,out):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -234,7 +241,7 @@ def MC_step(arr,Ts,nmax):
     accept = 0
     xran = np.random.randint(0,high=nmax, size=(nmax,nmax))
     yran = np.random.randint(0,high=nmax, size=(nmax,nmax))
-    aran = np.random.normal(scale=scale, size=(nmax,nmax))
+    aran = np.random.normal(0.0,scale=scale, size=(nmax,nmax))
     for i in range(nmax):
         for j in range(nmax):
             ix = xran[i,j]
@@ -254,9 +261,9 @@ def MC_step(arr,Ts,nmax):
                     accept += 1
                 else:
                     arr[ix,iy] -= ang
-    return accept/(nmax*nmax)
+    out[index] = accept/(nmax*nmax)
 #=======================================================================
-def main(program, nsteps, nmax, temp, pflag):
+def main(program, nsteps, nmax, temp, pflag,threads):
     """
     Arguments:
 	  program (string) = the name of the program;
@@ -278,16 +285,18 @@ def main(program, nsteps, nmax, temp, pflag):
     ratio = np.zeros(nsteps+1)#,dtype=np.dtype)
     order = np.zeros(nsteps+1)#,dtype=np.dtype)
     # Set initial values in arrays
+    nb.set_num_threads(threads)
     energy[0] = all_energy(lattice,nmax)
     ratio[0] = 0.5 # ideal value
-    order[0] = get_order(lattice,nmax)
+    get_order(lattice,nmax,0,order)
 
     # Begin doing and timing some MC steps.
     initial = time.time()
     for it in range(1,nsteps+1):
-        ratio[it] = MC_step(lattice,temp,nmax)
+        # ratio[it] = MC_step(lattice,temp,nmax)
+        MC_step(lattice,temp,nmax,it,ratio)
         energy[it] = all_energy(lattice,nmax)
-        order[it] = get_order(lattice,nmax)
+        get_order(lattice,nmax,it,order)
     final = time.time()
     runtime = final-initial
     
@@ -302,7 +311,7 @@ def main(program, nsteps, nmax, temp, pflag):
 # main simulation function.
 #
 if __name__ == '__main__':
-    if int(len(sys.argv)) == 7:
+    if int(len(sys.argv)) == 8:
         PROGNAME = sys.argv[0]
         ITERATIONS = int(sys.argv[1])
         SIZE = int(sys.argv[2])
@@ -310,11 +319,12 @@ if __name__ == '__main__':
         PLOTFLAG = int(sys.argv[4])
         test = int(sys.argv[5])
         test_max = float(sys.argv[6])
+        threads = int(sys.argv[7])
         if test == 1:
             for i in range (1,int(test_max*20)):
-                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG)
+                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG,threads)
         else:
-          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG)
+          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG,threads)
     else:
-        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max>".format(sys.argv[0]))
+        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max> <threads>".format(sys.argv[0]))
 #=======================================================================
