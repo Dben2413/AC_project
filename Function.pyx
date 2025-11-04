@@ -84,4 +84,4 @@ cpdef double get_order(double[:,:] arr,int nmax,int threads):
                         Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
     Qab = Qab/(2*nmax*nmax)
     eigenvalues,eigenvectors = np.linalg.eig(Qab)
-    return eigenvalues.max()
+    return np.max(eigenvalues.real)

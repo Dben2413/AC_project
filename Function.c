@@ -3357,6 +3357,7 @@ static const char __pyx_k_name[] = "name";
 static const char __pyx_k_ndim[] = "ndim";
 static const char __pyx_k_nmax[] = "nmax";
 static const char __pyx_k_pack[] = "pack";
+static const char __pyx_k_real[] = "real";
 static const char __pyx_k_size[] = "size";
 static const char __pyx_k_spec[] = "__spec__";
 static const char __pyx_k_step[] = "step";
@@ -3454,7 +3455,7 @@ static const char __pyx_k_Index_out_of_bounds_axis_d[] = "Index out of bounds (a
 static const char __pyx_k_Step_may_not_be_zero_axis_d[] = "Step may not be zero (axis %d)";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
-static const char __pyx_k_a_0r_F_Ba_Rt1Ba_Rwb_auBd_5_QfT[] = "\320\000\026\220a\360\010\000\0050\250r\260\030\270\021\270\"\270F\300\"\300B\300a\330\004\035\230R\230t\2401\240B\240a\330\004\035\230R\230w\240b\250\002\250$\250a\250u\260B\260d\270!\2705\300\002\300+\310Q\310f\320T\\\320\\]\320]_\320_d\320de\340\004\010\210\005\210U\220!\2201\330\010\014\210E\220\025\220a\220q\330\021\022\330\020\024\220E\230\025\230a\230q\330\030#\2401\320$5\260Q\330\030\033\2301\230B\230f\240A\240Q\240c\250\021\250\"\250B\250b\260\001\260\023\260A\260R\260r\270\023\270B\270e\3001\300B\300a\330\004\n\210#\210R\210q\220\001\220\024\220Q\220a\330\004\020\220\017\230r\240\027\250\004\250A\250Q\330\004\013\210;\220d\230!";
+static const char __pyx_k_a_0r_F_Ba_Rt1Ba_Rwb_auBd_5_QfT[] = "\320\000\026\220a\360\010\000\0050\250r\260\030\270\021\270\"\270F\300\"\300B\300a\330\004\035\230R\230t\2401\240B\240a\330\004\035\230R\230w\240b\250\002\250$\250a\250u\260B\260d\270!\2705\300\002\300+\310Q\310f\320T\\\320\\]\320]_\320_d\320de\340\004\010\210\005\210U\220!\2201\330\010\014\210E\220\025\220a\220q\330\021\022\330\020\024\220E\230\025\230a\230q\330\030#\2401\320$5\260Q\330\030\033\2301\230B\230f\240A\240Q\240c\250\021\250\"\250B\250b\260\001\260\023\260A\260R\260r\270\023\270B\270e\3001\300B\300a\330\004\n\210#\210R\210q\220\001\220\024\220Q\220a\330\004\020\220\017\230r\240\027\250\004\250A\250Q\330\004\013\2102\210T\220\021\220+\230Q";
 static const char __pyx_k_q_Q_Bar_Bar_Bar_Bar_Qc_AS_Q_Rs[] = "\320\000\027\220q\330\004\025\220Q\330\004\024\220B\220a\220r\230\021\230!\330\004\024\220B\220a\220r\230\021\230!\330\004\024\220B\220a\220r\230\021\230!\330\004\024\220B\220a\220r\230\021\230!\360\006\000\005\013\210#\210Q\210c\220\023\220A\220S\230\001\230\024\230Q\330\004\n\210#\210R\210s\220!\2203\220a\220s\230!\2304\230q\240\003\2401\240A\330\004\n\210#\210Q\210c\220\023\220A\220S\230\001\230\024\230Q\330\004\n\210#\210R\210s\220!\2203\220a\220s\230!\2304\230q\240\003\2401\240A\330\004\n\210#\210Q\210c\220\023\220A\220S\230\001\230\023\230A\330\004\n\210#\210R\210s\220!\2203\220a\220s\230!\2304\230q\240\003\2401\240A\330\004\n\210#\210Q\210d\220$\220b\230\003\2301\230D\240\001\330\004\n\210#\210R\210s\220!\2203\220a\220s\230!\2304\230q\240\003\2401\240A\340\004\013\2101";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
 static const char __pyx_k_A_Ba_a_7_2U_vU_7_2U_vU_BgWAV6_u[] = "\320\000\024\220A\340\004\030\230\004\230B\230a\330\004\026\220a\360\010\000\005\032\230\022\2307\240(\250!\2502\250U\260%\260v\270U\300!\330\004\031\230\022\2307\240(\250!\2502\250U\260%\260v\270U\300!\330\004\034\230B\230g\240W\250A\250V\2606\270\026\270u\300A\330\004\034\230B\230g\240X\250Q\250d\260$\260f\270E\300\021\340\t\n\330\014\027\220q\320\030)\250\021\330\014\020\220\005\220U\230!\2301\330\020\025\220T\230\021\230\"\230A\330\020\025\220T\230\021\230\"\230A\330\020\026\220d\230!\2302\230Q\330\020\026\220j\240\001\240\024\240S\250\003\2501\330\020\023\2201\220C\220w\230a\330\020\026\220j\240\001\240\024\240S\250\003\2501\330\020\023\2203\220b\230\001\330\024\036\230a\340\024\034\230C\230r\240\022\2404\240r\250\025\250b\260\001\330\024\027\220v\230S\240\004\240A\240R\240q\330\030\"\240!\340\030\033\2301\230C\230w\240a\330\004\013\2106\220\022\2204\220q\230\001";
@@ -3592,7 +3593,7 @@ typedef struct {
   PyObject *__pyx_slice[1];
   PyObject *__pyx_tuple[4];
   PyObject *__pyx_codeobj_tab[4];
-  PyObject *__pyx_string_tab[152];
+  PyObject *__pyx_string_tab[153];
   PyObject *__pyx_float_0_0;
   PyObject *__pyx_float_1_0;
   PyObject *__pyx_int_0;
@@ -3760,37 +3761,38 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_randint __pyx_string_tab[118]
 #define __pyx_n_u_random __pyx_string_tab[119]
 #define __pyx_n_u_range __pyx_string_tab[120]
-#define __pyx_n_u_reduce __pyx_string_tab[121]
-#define __pyx_n_u_reduce_cython __pyx_string_tab[122]
-#define __pyx_n_u_reduce_ex __pyx_string_tab[123]
-#define __pyx_n_u_register __pyx_string_tab[124]
-#define __pyx_n_u_reshape __pyx_string_tab[125]
-#define __pyx_n_u_scale __pyx_string_tab[126]
-#define __pyx_n_u_set_name __pyx_string_tab[127]
-#define __pyx_n_u_setstate __pyx_string_tab[128]
-#define __pyx_n_u_setstate_cython __pyx_string_tab[129]
-#define __pyx_n_u_shape __pyx_string_tab[130]
-#define __pyx_n_u_sin __pyx_string_tab[131]
-#define __pyx_n_u_size __pyx_string_tab[132]
-#define __pyx_n_u_spec __pyx_string_tab[133]
-#define __pyx_n_u_start __pyx_string_tab[134]
-#define __pyx_n_u_step __pyx_string_tab[135]
-#define __pyx_n_u_stop __pyx_string_tab[136]
-#define __pyx_kp_u_strided_and_direct __pyx_string_tab[137]
-#define __pyx_kp_u_strided_and_direct_or_indirect __pyx_string_tab[138]
-#define __pyx_kp_u_strided_and_indirect __pyx_string_tab[139]
-#define __pyx_n_u_struct __pyx_string_tab[140]
-#define __pyx_n_u_test __pyx_string_tab[141]
-#define __pyx_n_u_threads __pyx_string_tab[142]
-#define __pyx_kp_u_unable_to_allocate_array_data __pyx_string_tab[143]
-#define __pyx_kp_u_unable_to_allocate_shape_and_str __pyx_string_tab[144]
-#define __pyx_n_u_uniform __pyx_string_tab[145]
-#define __pyx_n_u_unpack __pyx_string_tab[146]
-#define __pyx_n_u_update __pyx_string_tab[147]
-#define __pyx_n_u_vstack __pyx_string_tab[148]
-#define __pyx_n_u_x __pyx_string_tab[149]
-#define __pyx_n_u_zeros __pyx_string_tab[150]
-#define __pyx_n_u_zeros_like __pyx_string_tab[151]
+#define __pyx_n_u_real __pyx_string_tab[121]
+#define __pyx_n_u_reduce __pyx_string_tab[122]
+#define __pyx_n_u_reduce_cython __pyx_string_tab[123]
+#define __pyx_n_u_reduce_ex __pyx_string_tab[124]
+#define __pyx_n_u_register __pyx_string_tab[125]
+#define __pyx_n_u_reshape __pyx_string_tab[126]
+#define __pyx_n_u_scale __pyx_string_tab[127]
+#define __pyx_n_u_set_name __pyx_string_tab[128]
+#define __pyx_n_u_setstate __pyx_string_tab[129]
+#define __pyx_n_u_setstate_cython __pyx_string_tab[130]
+#define __pyx_n_u_shape __pyx_string_tab[131]
+#define __pyx_n_u_sin __pyx_string_tab[132]
+#define __pyx_n_u_size __pyx_string_tab[133]
+#define __pyx_n_u_spec __pyx_string_tab[134]
+#define __pyx_n_u_start __pyx_string_tab[135]
+#define __pyx_n_u_step __pyx_string_tab[136]
+#define __pyx_n_u_stop __pyx_string_tab[137]
+#define __pyx_kp_u_strided_and_direct __pyx_string_tab[138]
+#define __pyx_kp_u_strided_and_direct_or_indirect __pyx_string_tab[139]
+#define __pyx_kp_u_strided_and_indirect __pyx_string_tab[140]
+#define __pyx_n_u_struct __pyx_string_tab[141]
+#define __pyx_n_u_test __pyx_string_tab[142]
+#define __pyx_n_u_threads __pyx_string_tab[143]
+#define __pyx_kp_u_unable_to_allocate_array_data __pyx_string_tab[144]
+#define __pyx_kp_u_unable_to_allocate_shape_and_str __pyx_string_tab[145]
+#define __pyx_n_u_uniform __pyx_string_tab[146]
+#define __pyx_n_u_unpack __pyx_string_tab[147]
+#define __pyx_n_u_update __pyx_string_tab[148]
+#define __pyx_n_u_vstack __pyx_string_tab[149]
+#define __pyx_n_u_x __pyx_string_tab[150]
+#define __pyx_n_u_zeros __pyx_string_tab[151]
+#define __pyx_n_u_zeros_like __pyx_string_tab[152]
 /* #### Code section: module_state_clear ### */
 #if CYTHON_USE_MODULE_STATE
 static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
@@ -3838,7 +3840,7 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_slice[i]); }
   for (int i=0; i<4; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
   for (int i=0; i<4; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<152; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<153; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   Py_CLEAR(clear_module_state->__pyx_float_0_0);
   Py_CLEAR(clear_module_state->__pyx_float_1_0);
   Py_CLEAR(clear_module_state->__pyx_int_0);
@@ -3895,7 +3897,7 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_slice[i]); }
   for (int i=0; i<4; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
   for (int i=0; i<4; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<152; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<153; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_float_0_0);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_float_1_0);
   __Pyx_VISIT_CONST(traverse_module_state->__pyx_int_0);
@@ -21160,7 +21162,7 @@ static double __pyx_f_8Function_get_order(__Pyx_memviewslice __pyx_v_arr, int __
  *                         Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
  *     Qab = Qab/(2*nmax*nmax)             # <<<<<<<<<<<<<<
  *     eigenvalues,eigenvectors = np.linalg.eig(Qab)
- *     return eigenvalues.max()
+ *     return np.max(eigenvalues.real)
 */
   __pyx_t_1 = __Pyx_PyLong_From_long(((2 * __pyx_v_nmax) * __pyx_v_nmax)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -21192,7 +21194,7 @@ static double __pyx_f_8Function_get_order(__Pyx_memviewslice __pyx_v_arr, int __
  *                         Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
  *     Qab = Qab/(2*nmax*nmax)
  *     eigenvalues,eigenvectors = np.linalg.eig(Qab)             # <<<<<<<<<<<<<<
- *     return eigenvalues.max()
+ *     return np.max(eigenvalues.real)
 */
   __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
@@ -21268,15 +21270,34 @@ static double __pyx_f_8Function_get_order(__Pyx_memviewslice __pyx_v_arr, int __
   /* "Function.pyx":87
  *     Qab = Qab/(2*nmax*nmax)
  *     eigenvalues,eigenvectors = np.linalg.eig(Qab)
- *     return eigenvalues.max()             # <<<<<<<<<<<<<<
+ *     return np.max(eigenvalues.real)             # <<<<<<<<<<<<<<
 */
-  __pyx_t_1 = __pyx_v_eigenvalues;
-  __Pyx_INCREF(__pyx_t_1);
-  __pyx_t_8 = 0;
+  __pyx_t_1 = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_mstate_global->__pyx_n_u_max); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_13);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_eigenvalues, __pyx_mstate_global->__pyx_n_u_real); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_8 = 1;
+  #if CYTHON_UNPACK_METHODS
+  if (unlikely(PyMethod_Check(__pyx_t_13))) {
+    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_13);
+    assert(__pyx_t_1);
+    PyObject* __pyx__function = PyMethod_GET_FUNCTION(__pyx_t_13);
+    __Pyx_INCREF(__pyx_t_1);
+    __Pyx_INCREF(__pyx__function);
+    __Pyx_DECREF_SET(__pyx_t_13, __pyx__function);
+    __pyx_t_8 = 0;
+  }
+  #endif
   {
-    PyObject *__pyx_callargs[2] = {__pyx_t_1, NULL};
-    __pyx_t_3 = __Pyx_PyObject_FastCallMethod(__pyx_mstate_global->__pyx_n_u_max, __pyx_callargs+__pyx_t_8, (1-__pyx_t_8) | (1*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
+    PyObject *__pyx_callargs[2] = {__pyx_t_1, __pyx_t_5};
+    __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_13, __pyx_callargs+__pyx_t_8, (2-__pyx_t_8) | (__pyx_t_8*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
   }
@@ -23790,6 +23811,7 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_randint, sizeof(__pyx_k_randint), 0, 1, 1}, /* PyObject cname: __pyx_n_u_randint */
   {__pyx_k_random, sizeof(__pyx_k_random), 0, 1, 1}, /* PyObject cname: __pyx_n_u_random */
   {__pyx_k_range, sizeof(__pyx_k_range), 0, 1, 1}, /* PyObject cname: __pyx_n_u_range */
+  {__pyx_k_real, sizeof(__pyx_k_real), 0, 1, 1}, /* PyObject cname: __pyx_n_u_real */
   {__pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 1, 1}, /* PyObject cname: __pyx_n_u_reduce */
   {__pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 1, 1}, /* PyObject cname: __pyx_n_u_reduce_cython */
   {__pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 1, 1}, /* PyObject cname: __pyx_n_u_reduce_ex */
@@ -23975,7 +23997,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
     __pyx_mstate_global->__pyx_codeobj_tab[2] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_Function_pyx, __pyx_mstate->__pyx_n_u_MC_step, __pyx_k_A_Ba_a_7_2U_vU_7_2U_vU_BgWAV6_u, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[2])) goto bad;
   }
   {
-    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 71, 219};
+    const __Pyx_PyCode_New_function_description descr = {3, 0, 0, 3, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 71, 223};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_arr, __pyx_mstate->__pyx_n_u_nmax, __pyx_mstate->__pyx_n_u_threads};
     __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_Function_pyx, __pyx_mstate->__pyx_n_u_get_order, __pyx_k_a_0r_F_Ba_Rt1Ba_Rwb_auBd_5_QfT, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
