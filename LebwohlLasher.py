@@ -184,8 +184,8 @@ def all_energy(arr,nmax):
             enall += one_energy(arr,i,j,nmax)
     return enall
 #=======================================================================
-@nb.guvectorize(['(float64[:,:],int32,int32,float64[:])'], '(m,n),(),()->()', nopython=True, target='parallel')
-def get_order(arr,nmax,index,out):
+@nb.njit
+def get_order(arr,nmax):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -211,12 +211,12 @@ def get_order(arr,nmax,index,out):
                     Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
     Qab = Qab/(2*nmax*nmax)
     eigenvalues,eigenvectors = np.linalg.eig(Qab)
-    out[index] = eigenvalues.max()
-    # return eigenvalues.max()
+    
+    return eigenvalues.max()
 
 #=======================================================================
-@nb.guvectorize(['(float64[:,:],float64,int32,int32,float64[:])'], '(m,n),(),(),()->()', nopython=True, target='parallel')
-def MC_step(arr,Ts,nmax,index,out):
+@nb.njit
+def MC_step(arr,Ts,nmax):
     """
     Arguments:
 	  arr (float(nmax,nmax)) = array that contains lattice data;
@@ -261,9 +261,9 @@ def MC_step(arr,Ts,nmax,index,out):
                     accept += 1
                 else:
                     arr[ix,iy] -= ang
-    out[index] = accept/(nmax*nmax)
+    return accept/(nmax*nmax)
 #=======================================================================
-def main(program, nsteps, nmax, temp, pflag,threads):
+def main(program, nsteps, nmax, temp, pflag):
     """
     Arguments:
 	  program (string) = the name of the program;
@@ -285,18 +285,17 @@ def main(program, nsteps, nmax, temp, pflag,threads):
     ratio = np.zeros(nsteps+1)#,dtype=np.dtype)
     order = np.zeros(nsteps+1)#,dtype=np.dtype)
     # Set initial values in arrays
-    nb.set_num_threads(threads)
     energy[0] = all_energy(lattice,nmax)
     ratio[0] = 0.5 # ideal value
-    get_order(lattice,nmax,0,order)
+    order[0]= get_order(lattice,nmax)
 
     # Begin doing and timing some MC steps.
     initial = time.time()
     for it in range(1,nsteps+1):
         # ratio[it] = MC_step(lattice,temp,nmax)
-        MC_step(lattice,temp,nmax,it,ratio)
+        ratio[it]=MC_step(lattice,temp,nmax)
         energy[it] = all_energy(lattice,nmax)
-        get_order(lattice,nmax,it,order)
+        order[it]= get_order(lattice,nmax)
     final = time.time()
     runtime = final-initial
     
@@ -311,7 +310,7 @@ def main(program, nsteps, nmax, temp, pflag,threads):
 # main simulation function.
 #
 if __name__ == '__main__':
-    if int(len(sys.argv)) == 8:
+    if int(len(sys.argv)) == 7:
         PROGNAME = sys.argv[0]
         ITERATIONS = int(sys.argv[1])
         SIZE = int(sys.argv[2])
@@ -319,12 +318,11 @@ if __name__ == '__main__':
         PLOTFLAG = int(sys.argv[4])
         test = int(sys.argv[5])
         test_max = float(sys.argv[6])
-        threads = int(sys.argv[7])
         if test == 1:
             for i in range (1,int(test_max*20)):
-                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG,threads)
+                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG)
         else:
-          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG,threads)
+          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG)
     else:
-        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max> <threads>".format(sys.argv[0]))
+        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max> ".format(sys.argv[0]))
 #=======================================================================
