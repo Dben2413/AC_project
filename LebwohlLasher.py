@@ -194,6 +194,8 @@ def get_order(arr,nmax,start,end):
 	Returns:
 	  max(eigenvalues(Qab)) (float) = order parameter for lattice.
     """
+    
+    # print(arr.shape)
     Qab = np.zeros((3,3))
     delta = np.eye(3,3)
     #
@@ -348,13 +350,12 @@ def main(program, nsteps, nmax, temp, pflag):
       # print(order.shape)
       # print("#=======================================================================")
       order=np.add.reduce(order,axis=0)
-      # print(order[1])
       # print(order.shape)
       # print(order[1].shape)
       for i in range(nsteps):
-        print(order[i])
         eigenvalues,eigenvectors = np.linalg.eig(order[i])
         order_final[i]=eigenvalues.max()
+      print(order[-2])
       final_time = MPI.Wtime()
       runtime = final_time-initial_time
 
@@ -383,10 +384,10 @@ def main(program, nsteps, nmax, temp, pflag):
 
       start=offset
       end=offset+rows-1
-      if offset==0:
-          start=1
-      if (offset+rows)==nmax:
-          end-=1
+      # if offset==0:
+      #     start=1
+      # if (offset+rows)==nmax:
+      #     end-=1
 
 
 
