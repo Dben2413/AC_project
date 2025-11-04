@@ -206,9 +206,10 @@ def get_order(arr,nmax,start,end):
             for i in range(start,end+1):
                 for j in range(nmax):
                     Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
-    Qab = Qab/(2*nmax*nmax)
-    eigenvalues,eigenvectors = np.linalg.eig(Qab)
-    return eigenvalues.max()
+    return  Qab/(2*nmax*nmax)
+    
+    # eigenvalues,eigenvectors = np.linalg.eig(Qab)
+    # return eigenvalues.max()
 #=======================================================================
 def MC_step(arr,Ts,nmax,start,end):
     """
@@ -285,7 +286,7 @@ def main(program, nsteps, nmax, temp, pflag):
     lattice_0=np.random.random_sample((nmax,nmax))*2.0*np.pi
     lattice_1=np.random.random_sample((nmax,nmax))*2.0*np.pi
 
-
+    order_final = np.zeros(nsteps+1)
     comm = MPI.COMM_WORLD
     taskid = comm.Get_rank()
     numtasks = comm.Get_size()
@@ -293,7 +294,7 @@ def main(program, nsteps, nmax, temp, pflag):
 
     energy = np.zeros((numtasks-1, nsteps+1))
     ratio = np.zeros((numtasks-1, nsteps+1))
-    order = np.zeros((numtasks-1, nsteps+1))
+    order = np.empty((numtasks-1, nsteps+1,3,3))
 
     # for i in range(numtasks-1):
     energy[0][0] = all_energy(lattice_0,nmax,0,nmax-1)
@@ -341,14 +342,29 @@ def main(program, nsteps, nmax, temp, pflag):
           order[i-1] = comm.recv(source=i, tag=DONE)
           comm.Recv([lattice_0[offset,:],rows*nmax,MPI.DOUBLE], source=i, tag=DONE)
 
+      
+      # for i in range(len(order)):
+      #   print(order[i][1])
+      # print(order.shape)
+      # print("#=======================================================================")
+      order=np.add.reduce(order,axis=0)
+      # print(order[1])
+      # print(order.shape)
+      # print(order[1].shape)
+      for i in range(nsteps):
+        print(order[i])
+        eigenvalues,eigenvectors = np.linalg.eig(order[i])
+        order_final[i]=eigenvalues.max()
       final_time = MPI.Wtime()
       runtime = final_time-initial_time
+
+          
       energy=np.sum(energy,axis=0)
-      order=np.sum(order,axis=0)
+      # order=np.sum(order,axis=0)
       ratio=np.sum(ratio,axis=0)
-      print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,temp,order[nsteps-1],runtime))
+      print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,temp,order_final[-2],runtime))
     # Plot final frame of lattice and generate output file
-      savedat(lattice_0,nsteps,temp,runtime,ratio,energy,order,nmax)
+      savedat(lattice_0,nsteps,temp,runtime,ratio,energy,order_final,nmax)
       plotdat(lattice_0,pflag,nmax)
 
 
