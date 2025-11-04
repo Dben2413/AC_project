@@ -16,8 +16,8 @@ def main(iteration,size,temp_boundary,plotflag):
             # print(i*0.05)
             temp = str(pd.read_csv(filename,header=None,nrows=1,skiprows=4).iloc[0])[28:33]
             Reduced_Temp.append(temp)
-            Order_parameter.append(df[(df['MCS'] >800)]["Order"].mean())
-            Order_parameter_STD.append(df[(df['MCS'] >800)]["Order"].std())
+            Order_parameter.append(df[(df['MCS'] >600)]["Order"].mean())
+            Order_parameter_STD.append(df[(df['MCS'] >600)]["Order"].std())
         except FileNotFoundError:
             pass
     # print(Reduced_Temp)

@@ -208,10 +208,11 @@ def get_order(arr_0,nmax,start,end):
             for i in range(start,end+1):
                 for j in range(nmax):
                     Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
-    return  Qab/(2*nmax*nmax)
     
-    # eigenvalues,eigenvectors = np.linalg.eig(Qab)
-    # return eigenvalues.max()
+    Qab = Qab/(2*nmax*nmax)
+    
+    eigenvalues,eigenvectors = np.linalg.eig(Qab)
+    return eigenvalues.max()
 #=======================================================================
 def MC_step(arr_0,Ts,nmax,start,end):
     """
@@ -291,11 +292,10 @@ def main(program, nsteps, nmax, temp, pflag):
     numtasks = comm.Get_size()
 
     lattice_0 = initdat(nmax)
-    order_final = np.zeros(nsteps+1)
 
     energy = np.zeros((numtasks-1, nsteps+1))
     ratio = np.zeros((numtasks-1, nsteps+1))
-    order = np.empty((numtasks-1, nsteps+1,3,3))
+    order = np.zeros((numtasks-1, nsteps+1))
 
     # for i in range(numtasks-1):
     energy[0][0] = all_energy(lattice_0,nmax,0,nmax-1)
@@ -347,23 +347,23 @@ def main(program, nsteps, nmax, temp, pflag):
       #   print(order[i][1])
       # print(order.shape)
       # print("#=======================================================================")
-      order=np.add.reduce(order,axis=0)
+      # order=np.add.reduce(order,axis=0)
       # print(order.shape)
       # print(order[0])
-      for i in range(0,nsteps+1):
-        eigenvalues,eigenvectors = np.linalg.eig(order[i])
+      # for i in range(0,nsteps+1):
+      #   eigenvalues,eigenvectors = np.linalg.eig(order[i])
 
-        order_final[i]=eigenvalues.max()
+        # order_final[i]=eigenvalues.max()
       final_time = MPI.Wtime()
       runtime = final_time-initial_time
-
+      
           
       energy=np.sum(energy,axis=0)
-      # order=np.sum(order,axis=0)
+      order=np.sum(order,axis=0)
       ratio=np.sum(ratio,axis=0)
-      print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,temp,order_final[-2],runtime))
+      print("{}: Size: {:d}, Steps: {:d}, T*: {:5.3f}: Order: {:5.3f}, Time: {:8.6f} s".format(program, nmax,nsteps,temp,order[-2],runtime))
     # Plot final frame of lattice and generate output file
-      savedat(lattice_0,nsteps,temp,runtime,ratio,energy,order_final,nmax)
+      savedat(lattice_0,nsteps,temp,runtime,ratio,energy,order,nmax)
       plotdat(lattice_0,pflag,nmax)
 
 
