@@ -31,8 +31,8 @@ cpdef double all_energy(double[:,:] arr, int nmax,int threads):
     cdef double enall = 0.0
     cdef int i, j
     with nogil:
-        for i in prange(nmax, num_threads=threads):
-            for j in prange(nmax,num_threads=threads):
+        for i in range(nmax):
+            for j in range(nmax):
                 enall += one_energy(arr, i, j, nmax)
     return enall
 
@@ -50,7 +50,7 @@ cpdef double MC_step(double[:,:] arr, double Ts,int nmax, int threads):
     cdef double[:,:] bran = np.random.uniform(0.0,1.0,size=(nmax,nmax))
 
     with nogil:
-        for i in prange(nmax,num_threads=threads):
+        for i in range(nmax):
             for j in range(nmax):
                 ix = xran[i,j]
                 iy = yran[i,j]
@@ -80,7 +80,7 @@ cpdef double get_order(double[:,:] arr,int nmax,int threads):
         for b in range(3):
             with nogil:
                 for i in range(nmax):
-                    for j in prange(nmax,num_threads=threads):
+                    for j in range(nmax):
                         Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
     Qab = Qab/(2*nmax*nmax)
     eigenvalues,eigenvectors = np.linalg.eig(Qab)

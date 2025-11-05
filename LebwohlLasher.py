@@ -296,13 +296,14 @@ def main(program, nsteps, nmax, temp, pflag, threads):
     # Plot final frame of lattice and generate output file
     savedat(lattice,nsteps,temp,runtime,ratio,energy,order,nmax)
     plotdat(lattice,pflag,nmax)
-    return 1
+    return runtime
 #=======================================================================
 # Main part of program, getting command line arguments and calling
 # main simulation function.
 #
 if __name__ == '__main__':
-    if int(len(sys.argv)) == 8:
+    if int(len(sys.argv)) == 7:
+        runtime = []
         PROGNAME = sys.argv[0]
         ITERATIONS = int(sys.argv[1])
         SIZE = int(sys.argv[2])
@@ -310,13 +311,13 @@ if __name__ == '__main__':
         PLOTFLAG = int(sys.argv[4])
         test = int(sys.argv[5])
         test_max = float(sys.argv[6])
-        threads = int(sys.argv[7])
   
         if test == 1:
             for i in range (1,int(test_max*20)):
-                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG,threads)
+                runtime.append(main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG,1))
+            print(f"mean run time:{np.mean(runtime)}")
         else:
-          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG,threads)
+          main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG,1)
     else:
-        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max> <number of threads>".format(sys.argv[0]))
+        print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max>".format(sys.argv[0]))
 #=======================================================================
