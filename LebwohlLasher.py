@@ -432,9 +432,10 @@ if __name__ == '__main__':
         test_max = float(sys.argv[6])
         if test == 1:
             for i in range (1,int(test_max*20)):
-                main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG)
+                time = main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG)
         else:
           main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG)
+        
     else:
         print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max>".format(sys.argv[0]))
 #=======================================================================
