@@ -205,6 +205,7 @@ def get_order(arr,nmax):
     #         for i in range(nmax):
     #             for j in range(nmax):
     #               Qab[a,b] += 3*lab[a,i,j]*lab[b,i,j] - delta[a,b]
+    
     #Numpy vectorization
     Qab = np.einsum('aij,bij->ab', lab, lab) - delta
     
