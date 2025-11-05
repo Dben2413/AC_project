@@ -297,13 +297,15 @@ def main(program, nsteps, nmax, temp, pflag):
     order = np.zeros((numtasks-1, nsteps+1))
 
     # for i in range(numtasks-1):
-    energy[0][0] = all_energy(lattice_0,nmax,0,nmax-1)
+    
     ratio[0][0] = 0.5 # ideal value
-    order[0][0] = get_order(lattice_0,nmax,0,nmax-1)
+    
 
     numworkers = numtasks-1
     if taskid == MASTER:
       lattice_0 = initdat(nmax)
+      energy[0][0] = all_energy(lattice_0,nmax,0,nmax-1)
+      order[0][0] = get_order(lattice_0,nmax,0,nmax-1)
       plotdat(lattice_0,pflag,nmax)
       averow = nmax//numworkers
       extra = nmax%numworkers
