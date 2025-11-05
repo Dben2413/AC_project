@@ -296,7 +296,7 @@ def main(program, nsteps, nmax, temp, pflag, threads):
     # Plot final frame of lattice and generate output file
     savedat(lattice,nsteps,temp,runtime,ratio,energy,order,nmax)
     plotdat(lattice,pflag,nmax)
-    return runtime
+    return 1
 #=======================================================================
 # Main part of program, getting command line arguments and calling
 # main simulation function.
@@ -314,7 +314,7 @@ if __name__ == '__main__':
   
         if test == 1:
             for i in range (1,int(test_max*20)):
-                runtime.append(main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG,1))
+              main(PROGNAME, ITERATIONS, SIZE, i*0.05, PLOTFLAG,1)
             print(f"mean run time:{np.mean(runtime)}")
         else:
           main(PROGNAME, ITERATIONS, SIZE, TEMPERATURE, PLOTFLAG,1)
