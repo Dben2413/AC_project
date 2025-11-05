@@ -438,4 +438,7 @@ if __name__ == '__main__':
         
     else:
         print("Usage: python {} <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max>".format(sys.argv[0]))
+
+# mpiexec -n 8 python LebwohlLasher.py <ITERATIONS> <SIZE> <TEMPERATURE> <PLOTFLAG> <test> <test_max>
+# Above code for windows machine 
 #=======================================================================
