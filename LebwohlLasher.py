@@ -286,12 +286,11 @@ def main(program, nsteps, nmax, temp, pflag):
     Returns:
       NULL
     """
-
+    lattice_0 = np.zeros((nmax,nmax))
     comm = MPI.COMM_WORLD
     taskid = comm.Get_rank()
     numtasks = comm.Get_size()
 
-    lattice_0 = initdat(nmax)
 
     energy = np.zeros((numtasks-1, nsteps+1))
     ratio = np.zeros((numtasks-1, nsteps+1))
@@ -304,11 +303,12 @@ def main(program, nsteps, nmax, temp, pflag):
 
     numworkers = numtasks-1
     if taskid == MASTER:
+      lattice_0 = initdat(nmax)
+      plotdat(lattice_0,pflag,nmax)
       averow = nmax//numworkers
       extra = nmax%numworkers
       offset = 0
     # Create and initialise lattice
-      lattice_0 = initdat(nmax)
 
       initial_time = MPI.Wtime()
       for i in range(1,numworkers+1):
