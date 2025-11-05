@@ -3,7 +3,7 @@ import numpy as np
 
 
 
-run_time = [0.540220,2.167920,8.599709,21.874488,26.375643,34.617553]
+run_time = [0.561101,2.149186,8.523571,19.188503,26.054648,34.578286]
 size = [20,40,80,120,140,160]
 fig,ax1 =plt.subplots()
 ax1.plot(size,run_time,marker = ".",label="runtime",color = "blue")
